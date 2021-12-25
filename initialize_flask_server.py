@@ -1,8 +1,6 @@
-
-
-def print_hi(name):
-    print(f'Hi, {name}\nTime to run this flask API bitch')  # Press Ctrl+F8 to toggle the breakpoint.
+from flask_server import create_app
 
 
 if __name__ == '__main__':
-    print_hi('bitches')
+    app = create_app()
+    app.run()
