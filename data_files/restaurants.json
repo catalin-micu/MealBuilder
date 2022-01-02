@@ -1,15 +1,15 @@
 [
   {
-    "restaurant_name": "my_restaurant",
+    "restaurant_name": "batch_upsert_restaurant",
     "franchise_id": "street_name/street_number",
-    "email": "my.restaurant@gmail.com",
+    "email": "some_test_value",
     "passwd": "password",
     "city": "city",
     "provides_custom_meals": true,
     "provides_scheduled_delivery": true
   },
   {
-    "restaurant_name": "my_second_restaurant",
+    "restaurant_name": "second_batch_upsert_restaurant",
     "franchise_id": "street_name/1",
     "email": "my.second.restaurant@gmail.com",
     "passwd": "password",
@@ -18,7 +18,7 @@
     "provides_scheduled_delivery": false
   },
   {
-    "restaurant_name": "my_third_restaurant",
+    "restaurant_name": "third_batch_upsert_restaurant",
     "franchise_id": "street_name/3",
     "email": "my.third.restaurant@gmail.com",
     "passwd": "password",

@@ -2,6 +2,18 @@ from sqlalchemy import Integer, Column, String, SmallInteger
 from flask_server.model import Session, Base
 
 
+class UsersColumns:
+    USER_ID = 'user_id'
+    EMAIL = 'email'
+    PASSWD = 'passwd'
+    FULL_NAME = 'full_name'
+    CARD_NB = 'card_nb'
+    CARD_HOLDER_NAME = 'card_holder_name'
+    CARD_EXPIRY = 'card_expiry'
+    CVV = 'cvv'
+    PREFERRED_ADDRESS = 'preferred_address'
+
+
 class Users(Base):
     __tablename__ = 'users'
 
