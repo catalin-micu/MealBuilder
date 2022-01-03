@@ -8,11 +8,11 @@ if __name__ == '__main__':
 
     restaurant_data = [
         {
-            "restaurant_name": "saucy_stakes",
-            "franchise_id": "street_name/street_number",
-            "email": "my.restaurant@ggmail.com",
-            "passwd": "password2",
-            "city": "city",
+            "restaurant_name": "value",
+            "franchise_id": "value",
+            "email": "value",
+            "passwd": "value",
+            "city": "value",
             "provides_custom_meals": True,
             "provides_scheduled_delivery": False
         },
@@ -30,5 +30,7 @@ if __name__ == '__main__':
     # b=2
 
     restaurants = Restaurants()
-    restaurants.upsert_row(rows=restaurant_data)
-    # restaurants.batch_upsert('./data_files/restaurants.json')
+    # restaurants.upsert_row(rows=restaurant_data)
+    # result = restaurants.batch_upsert('./data_files/restaurants.json')
+    b = restaurants.delete_rows(['14', '15'], identifier_type='id')
+    a=2

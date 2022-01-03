@@ -1,8 +1,8 @@
 import json
 from pathlib import Path
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String, Boolean, delete
 from sqlalchemy.dialects.postgresql import insert
-from flask_server.model import Base, BaseTable
+from flask_server.model import BaseTable
 
 
 class RestaurantsColumns:
@@ -28,10 +28,6 @@ class Restaurants(BaseTable):
     provides_custom_meals = Column(Boolean, default=False)
     provides_scheduled_delivery = Column(Boolean, default=False)
 
-
-    # def __init__(self, **kwargs):
-    #     super().__init__(**kwargs)
-
     def upsert_row(self, rows: list):
         """
         inserts or updates rows: if franchise_id already exists, it will update the columns on that row
@@ -55,7 +51,8 @@ class Restaurants(BaseTable):
         :param path_to_file: str that represents the location of the input json
         """
         abs_path = Path(path_to_file)   # file path object that matches os type
-        input_json = json.load(open(abs_path))
+        with open(abs_path) as file:
+            input_json = json.load(file)
 
         insert_stmt = insert(Restaurants).values(input_json)
         columns_to_update = {col.name: col for col in insert_stmt.excluded
@@ -66,3 +63,31 @@ class Restaurants(BaseTable):
 
         self.session.execute(upsert_stmt)
         self.session.commit()
+
+    def delete_rows(self, rows_to_delete: list, identifier_type: str) -> []:
+        """
+        deletes rows based on an unique identifier (id / email / franchise_id, according to table definition)
+        :param rows_to_delete: list of values that uniquely identify a row
+        :param identifier_type: identifier for delete statement
+        :return: list of dicts with info about deleted rows(name, franchise_id)
+        """
+        receipt = []
+        if identifier_type not in {'id', 'email', 'franchise_id'}:
+            raise ValueError('Unknown identifier')
+
+        delete_stmt = delete(Restaurants)
+        if identifier_type == 'id':
+            delete_stmt = delete_stmt.where(Restaurants.restaurant_id.in_(rows_to_delete))
+        elif identifier_type == 'email':
+            delete_stmt = delete_stmt.where(Restaurants.email.in_(rows_to_delete))
+        else:
+            delete_stmt = delete_stmt.where(Restaurants.franchise_id.in_(rows_to_delete))
+        delete_stmt = delete_stmt.returning(Restaurants.restaurant_name, Restaurants.franchise_id)
+
+        deleted_rows = self.session.execute(delete_stmt).fetchall()
+        self.session.commit()
+
+        for row in deleted_rows:
+            receipt.append(dict(row._mapping))
+
+        return receipt
