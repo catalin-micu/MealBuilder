@@ -7,8 +7,6 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    # sterge asta
-
     for bp in BLUEPRINTS:
         app.register_blueprint(blueprint=bp)
 
