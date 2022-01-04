@@ -7,9 +7,6 @@ def create_app():
     app = Flask(__name__)
     CORS(app)
 
-    # from .route.dummy_route import dummy_api
-    # app.register_blueprint(dummy_api)
-
     for bp in BLUEPRINTS:
         app.register_blueprint(blueprint=bp)
 
