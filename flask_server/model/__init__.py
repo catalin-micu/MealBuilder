@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-
+from flask_server import create_logger
 
 con_url = 'postgresql://postgres:password@localhost:5432/meal_builder'
 engine = create_engine(con_url)
@@ -8,6 +8,7 @@ Session = sessionmaker(bind=engine)
 
 
 Base = declarative_base()
+logger = create_logger(__name__, '%(name)s.%(module)s.%(funcName)s -> %(levelname)s: %(message)s')
 
 
 class BaseTable(Base):

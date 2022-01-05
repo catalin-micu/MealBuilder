@@ -1,5 +1,5 @@
 from sqlalchemy import Integer, Column, String, SmallInteger
-from flask_server.model import Session, Base
+from flask_server.model import BaseTable
 
 
 class UsersColumns:
@@ -14,7 +14,7 @@ class UsersColumns:
     PREFERRED_ADDRESS = 'preferred_address'
 
 
-class Users(Base):
+class Users(BaseTable):
     __tablename__ = 'users'
 
     user_id = Column(Integer, primary_key=True)
@@ -26,10 +26,6 @@ class Users(Base):
     card_expiry = Column(String)
     cvv = Column(SmallInteger)
     preferred_address = Column(String)
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.session = Session()
 
     def get_all_rows(self):
         rows = []

@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 from sqlalchemy import Column, Integer, String, Boolean, delete
 from sqlalchemy.dialects.postgresql import insert
-from flask_server.model import BaseTable
+from flask_server.model import BaseTable, logger
 
 
 class RestaurantsColumns:
@@ -41,8 +41,12 @@ class Restaurants(BaseTable):
                                                  RestaurantsColumns.FRANCHISE_ID, RestaurantsColumns.CITY}}
         upsert_stmt = insert_stmt.on_conflict_do_update(index_elements=[Restaurants.franchise_id],
                                                         set_=columns_to_update)
+
         self.session.execute(upsert_stmt)
         self.session.commit()
+
+        logger.info(f"Successfully upserted following restaurants:\n\t\t"
+                    f"{', '.join([item.get(RestaurantsColumns.RESTAURANT_NAME) for item in rows])}")
 
     def batch_upsert(self, path_to_file: str):
         """
@@ -50,19 +54,30 @@ class Restaurants(BaseTable):
          that row (except restaurant_id, franchise_id, city) with the newly provided data
         :param path_to_file: str that represents the location of the input json
         """
+        receipt = []
         abs_path = Path(path_to_file)   # file path object that matches os type
         with open(abs_path) as file:
             input_json = json.load(file)
 
-        insert_stmt = insert(Restaurants).values(input_json)
+        insert_stmt = insert(Restaurants).values(input_json).returning(
+            Restaurants.restaurant_name, Restaurants.franchise_id)
         columns_to_update = {col.name: col for col in insert_stmt.excluded
                              if col.name not in {RestaurantsColumns.RESTAURANT_ID,
                                                  RestaurantsColumns.FRANCHISE_ID, RestaurantsColumns.CITY}}
         upsert_stmt = insert_stmt.on_conflict_do_update(index_elements=[Restaurants.franchise_id],
                                                         set_=columns_to_update)
 
-        self.session.execute(upsert_stmt)
+        upserted_rows = self.session.execute(upsert_stmt)
         self.session.commit()
+
+        for row in upserted_rows:
+            receipt.append(dict(row._mapping))
+
+        logger.info(f"Successfully upserted restaurants: \n\t\t"
+                    f"{', '.join([item.get(RestaurantsColumns.RESTAURANT_NAME) for item in input_json])}\n"
+                    f"from file: {path_to_file}")
+
+        return receipt
 
     def delete_rows(self, rows_to_delete: list, identifier_type: str) -> []:
         """
