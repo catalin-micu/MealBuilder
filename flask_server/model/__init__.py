@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from flask_server import create_logger
+from flask_server.cutom_logger import create_logger
 
 con_url = 'postgresql://postgres:password@localhost:5432/meal_builder'
 engine = create_engine(con_url)
