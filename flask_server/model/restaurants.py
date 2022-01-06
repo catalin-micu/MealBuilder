@@ -35,18 +35,25 @@ class Restaurants(BaseTable):
         implemented for testing mainly, can be deleted later
         :param rows: list of dicts; keys of dict items = column names
         """
-        insert_stmt = insert(Restaurants).values(rows)
+        receipt = []
+        insert_stmt = insert(Restaurants).values(rows).returning(
+            Restaurants.restaurant_name, Restaurants.franchise_id)
         columns_to_update = {col.name: col for col in insert_stmt.excluded
                              if col.name not in {RestaurantsColumns.RESTAURANT_ID,
                                                  RestaurantsColumns.FRANCHISE_ID, RestaurantsColumns.CITY}}
         upsert_stmt = insert_stmt.on_conflict_do_update(index_elements=[Restaurants.franchise_id],
                                                         set_=columns_to_update)
 
-        self.session.execute(upsert_stmt)
+        upserted_rows = self.session.execute(upsert_stmt)
         self.session.commit()
+
+        for row in upserted_rows:
+            receipt.append(dict(row._mapping))
 
         logger.info(f"Successfully upserted following restaurants:\n\t\t"
                     f"{', '.join([item.get(RestaurantsColumns.RESTAURANT_NAME) for item in rows])}")
+
+        return receipt
 
     def batch_upsert(self, path_to_file: str):
         """
