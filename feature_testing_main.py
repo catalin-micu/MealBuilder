@@ -4,7 +4,9 @@ from flask_server.model.users import Users
 
 if __name__ == '__main__':
     users = Users()
-    users_rows = users.get_all_rows()
+    # users_rows = users.get_all_rows()
+    users.batch_upsert('./data_files/users.json')
+    # users.delete_rows(rows_to_delete=['0712345679'], identifier_type='phone_number')
 
     restaurant_data = [
         {
@@ -48,5 +50,5 @@ if __name__ == '__main__':
     restaurants.batch_upsert('./data_files/restaurants.json')
 
     # deleting and getting the receipt
-    # b = restaurants.delete_rows(['14', '15'], identifier_type='id')
-    a=2
+    b = restaurants.delete_rows(['1'], identifier_type='id')
+    a = 2
