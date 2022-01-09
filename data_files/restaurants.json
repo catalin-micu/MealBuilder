@@ -1,6 +1,6 @@
 [
   {
-    "restaurant_name": "batch_upsert_restaurant",
+    "restaurant_name": "batch_upsert_restaurant_api",
     "franchise_id": "street_name/street_number",
     "email": "some_test_value",
     "passwd": "password",
@@ -9,7 +9,7 @@
     "provides_scheduled_delivery": true
   },
   {
-    "restaurant_name": "second_batch_upsert_restaurant",
+    "restaurant_name": "second_batch_upsert_restaurant_api",
     "franchise_id": "street_name/1",
     "email": "my.second.restaurant@gmail.com",
     "passwd": "password",
