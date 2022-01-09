@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import Integer, Column, String, SmallInteger, Boolean, func, DateTime, delete
+from sqlalchemy import Integer, Column, String, SmallInteger, Boolean, func, DateTime, delete, select
 from flask_server.model import BaseTable, logger
 
 
@@ -21,6 +21,9 @@ class UsersColumns:
     PHONE_NUMBER = 'phone_number'
 
 
+ACCEPTED_IDENTIFIER_TYPES = {UsersColumns.USER_ID, UsersColumns.EMAIL, UsersColumns.PHONE_NUMBER}
+
+
 class Users(BaseTable):
     __tablename__ = 'users'
 
@@ -35,30 +38,16 @@ class Users(BaseTable):
     preferred_addresses = Column(String)
     admin_profile = Column(Boolean, default=False)
     created_on = Column(DateTime, default=func.now())
-    last_login = Column(DateTime, default=func.now(), onupdate=func.now())
+    last_login = Column(DateTime)
     phone_number = Column(String, nullable=False, unique=True)
 
-    def get_all_rows(self):
-        rows = []
-        for row in self.session.query(Users).all():
-            rows.append(
-                {
-                    'user_id': row.user_id,
-                    'email': row.email,
-                    'passwd': row.passwd,
-                    'name': row.full_name,
-                    'created_on': row.created_on,
-                    'last_login': row.last_login
-                }
-            )
-
-        return rows
-
-    def batch_upsert(self, path_to_file: str):
+    def batch_upsert_from_file(self, path_to_file: str) -> []:
         """
-        inserts or updates rows using json file as input: if franchise_id already exists, it will update the columns on
-         that row (except restaurant_id, franchise_id, city) with the newly provided data
+        ** don't think this will ever be used on production **
+        inserts or updates rows using json file as input: if phone_number already exists, it will update a set of
+         columns that make sense to be updated with the newly provided data
         :param path_to_file: str that represents the location of the input json
+        :return : receipt list
         """
         receipt = []
         abs_path = Path(path_to_file)   # file path object that matches os type
@@ -69,7 +58,9 @@ class Users(BaseTable):
             Users.full_name, Users.email, Users.preferred_addresses)
         columns_to_update = {col.name: col for col in insert_stmt.excluded
                              if col.name not in {UsersColumns.USER_ID,
-                                                 UsersColumns.EMAIL, UsersColumns.PREFERRED_ADDRESSES}}
+                                                 UsersColumns.EMAIL, UsersColumns.PREFERRED_ADDRESSES,
+                                                 UsersColumns.CREATED_ON, UsersColumns.LAST_LOGIN,
+                                                 UsersColumns.ADMIN_PROFILE}}
         upsert_stmt = insert_stmt.on_conflict_do_update(index_elements=[Users.phone_number],
                                                         set_=columns_to_update)
 
@@ -87,19 +78,19 @@ class Users(BaseTable):
 
     def delete_rows(self, rows_to_delete: list, identifier_type: str) -> []:
         """
-        deletes rows based on an unique identifier (id / email / franchise_id, according to table definition)
+        deletes rows based on an unique identifier (user_id / email / phone_number, according to table definition)
         :param rows_to_delete: list of values that uniquely identify a row
         :param identifier_type: identifier for delete statement
-        :return: list of dicts with info about deleted rows(name, franchise_id)
+        :return: list of dicts with info about deleted rows(name, email, phone_number)
         """
         receipt = []
-        if identifier_type not in {'id', 'email', 'phone_number'}:
+        if identifier_type not in ACCEPTED_IDENTIFIER_TYPES:
             raise ValueError('Unknown identifier')
 
         delete_stmt = delete(Users)
-        if identifier_type == 'id':
+        if identifier_type == UsersColumns.USER_ID:
             delete_stmt = delete_stmt.where(Users.user_id.in_(rows_to_delete))
-        elif identifier_type == 'email':
+        elif identifier_type == UsersColumns.EMAIL:
             delete_stmt = delete_stmt.where(Users.email.in_(rows_to_delete))
         else:
             delete_stmt = delete_stmt.where(Users.phone_number.in_(rows_to_delete))
@@ -112,3 +103,32 @@ class Users(BaseTable):
             receipt.append(dict(row._mapping))
 
         return receipt
+
+    def insert_user(self, user_data: dict) -> list:
+        if self.check_user_existence(identifier=user_data.get(UsersColumns.EMAIL), identifier_type=UsersColumns.EMAIL):
+            logger.error(f"User with email '{user_data.get(UsersColumns.EMAIL)}' already exists")
+            raise StopIteration
+
+        receipt = []
+
+        insert_stmt = insert(Users).values(user_data).returning(
+            Users.full_name, Users.email, Users.preferred_addresses)
+
+        inserted_row = self.session.execute(insert_stmt)
+        self.session.commit()
+
+        for row in inserted_row:
+            receipt.append(dict(row._mapping))
+
+        logger.info(f"Successfully inserted user: \n\t\t{[user_data.get(UsersColumns.FULL_NAME)]}\n")
+
+        return receipt
+
+    def check_user_existence(self, identifier: str, identifier_type: str) -> bool:
+        if identifier_type not in ACCEPTED_IDENTIFIER_TYPES:
+            raise ValueError('Unknown identifier')
+
+        select_stmt = select(Users).where(Users.__table__.c[identifier_type] == identifier)
+
+        exec_result = self.session.execute(select_stmt)
+        return bool(len(exec_result.fetchall()))
