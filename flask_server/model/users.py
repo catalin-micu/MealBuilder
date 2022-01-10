@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy import Integer, Column, String, SmallInteger, Boolean, func, DateTime, delete, select
+from sqlalchemy import Integer, Column, String, SmallInteger, Boolean, func, DateTime, delete, select, update
 from flask_server.model import BaseTable, logger
 
 
@@ -99,6 +99,8 @@ class Users(BaseTable):
         deleted_rows = self.session.execute(delete_stmt).fetchall()
         self.session.commit()
 
+        logger.info(f"Successfully deleted users with '{identifier_type}' identifier = '{rows_to_delete}'")
+
         for row in deleted_rows:
             receipt.append(dict(row._mapping))
 
@@ -143,3 +145,24 @@ class Users(BaseTable):
 
         exec_result = self.session.execute(select_stmt)
         return bool(len(exec_result.fetchall()))
+
+    def update_user(self, identifier: str, identifier_type: str, update_data: dict) -> []:
+        if not self.check_user_existence(identifier=identifier, identifier_type=identifier_type):
+            logger.error(f"User with '{identifier_type}' identifier = '{identifier}' does not exist")
+            raise StopIteration
+
+        receipt = []
+
+        update_stmt = update(Users).where(Users.__table__.c[identifier_type] == identifier).values(update_data).\
+            returning(Users.full_name, Users.email, Users.phone_number)
+
+        updated_row = self.session.execute(update_stmt)
+        self.session.commit()
+
+        for row in updated_row:
+            receipt.append(dict(row._mapping))
+
+        logger.info(f"Successfully updated user with '{identifier_type}' identifier = '{identifier}'\n\t"
+                    f"with data {update_data}")
+
+        return receipt

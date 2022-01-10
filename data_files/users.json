@@ -1,6 +1,5 @@
 [
   {
-        "user_id" : 1,
         "email" : "jane.doe@hotmail.com1",
         "passwd" : "password21",
         "full_name" : "Jane Doe2",
@@ -12,7 +11,6 @@
         "phone_number": "0712345679"
   },
   {
-        "user_id" : 2,
         "email" : "jane.doe@hotmail.com",
         "passwd" : "password2",
         "full_name" : "Jane Doe3",
