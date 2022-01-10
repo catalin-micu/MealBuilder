@@ -105,6 +105,11 @@ class Users(BaseTable):
         return receipt
 
     def insert_user(self, user_data: dict) -> list:
+        """
+        inserts a new user in the db if entry doesn't already exist
+        :param user_data: dict with column name as keys and appropriate values
+        :return: receipt list
+        """
         if self.check_user_existence(identifier=user_data.get(UsersColumns.EMAIL), identifier_type=UsersColumns.EMAIL):
             logger.error(f"User with email '{user_data.get(UsersColumns.EMAIL)}' already exists")
             raise StopIteration
@@ -125,6 +130,12 @@ class Users(BaseTable):
         return receipt
 
     def check_user_existence(self, identifier: str, identifier_type: str) -> bool:
+        """
+        check if a user already exists in the db
+        :param identifier: value of the unique identifier that is being used
+        :param identifier_type: column name of the identifier
+        :return: true if user is found else false
+        """
         if identifier_type not in ACCEPTED_IDENTIFIER_TYPES:
             raise ValueError('Unknown identifier')
 
