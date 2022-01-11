@@ -1,11 +1,12 @@
 from datetime import datetime
 from data_files.data import insert_user_data
 from flask_server.model.restaurants import Restaurants
+from flask_server.model.sessions import Sessions
 from flask_server.model.users import Users
 
 
 if __name__ == '__main__':
-    users = Users()
+    # users = Users()
     """upsert from file"""
     # users.batch_upsert_from_file('./data_files/users.json')
     """delete user"""
@@ -13,9 +14,8 @@ if __name__ == '__main__':
     """insert user"""
     # a = users.insert_user(user_data=insert_user_data)
     """update user"""
-    a = users.update_user('5', 'user_id', {'last_login': datetime.now()})
+    # a = users.update_user('5', 'user_id', {'last_login': datetime.now()})
 
-    b=2
     """created table object from dict"""
     # r2 = Restaurants(**restaurant_data[1])
     # b=2
@@ -30,3 +30,8 @@ if __name__ == '__main__':
 
     """deleting and getting the receipt"""
     # b = restaurants.delete_rows(['1'], identifier_type='id')
+
+    sess = Sessions()
+    """create session"""
+    a = sess.delete_session(2)
+    b=2
