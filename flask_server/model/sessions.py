@@ -19,7 +19,7 @@ class Sessions(BaseTable):
     __tablename__ = 'sessions'
 
     session_id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.user_id'))
+    user_id = Column(Integer, ForeignKey('users.user_id'), unique=True)
     last_action = Column(DateTime, default=func.now())
 
     users = relationship('Users', backref=backref("sessions", uselist=False))
@@ -36,8 +36,9 @@ class Sessions(BaseTable):
 
         sessions_select_stmt = select(Sessions).where(Sessions.__table__.c[SessionsColumns.USER_ID] == user_id)
         if len(self.session.execute(sessions_select_stmt).fetchall()):
-            logger.error(f"Session for user with email '{email}' already exists")
-            raise StopIteration
+            logger.info(f"Session for user with email '{email}' already exists; updating last action")
+            self.update_last_action(user_id)
+            return
 
         receipt = []
 

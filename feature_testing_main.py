@@ -6,7 +6,7 @@ from flask_server.model.users import Users
 
 
 if __name__ == '__main__':
-    # users = Users()
+    users = Users()
     """upsert from file"""
     # users.batch_upsert_from_file('./data_files/users.json')
     """delete user"""
@@ -15,6 +15,8 @@ if __name__ == '__main__':
     # a = users.insert_user(user_data=insert_user_data)
     """update user"""
     # a = users.update_user('5', 'user_id', {'last_login': datetime.now()})
+    """check user credentials"""
+    a = users.get_user_id_from_email('insert@gmail.com')
 
     """created table object from dict"""
     # r2 = Restaurants(**restaurant_data[1])
@@ -31,7 +33,7 @@ if __name__ == '__main__':
     """deleting and getting the receipt"""
     # b = restaurants.delete_rows(['1'], identifier_type='id')
 
-    sess = Sessions()
-    """create session"""
-    a = sess.delete_session(2)
+    # sess = Sessions()
+    """delete session"""
+    # a = sess.delete_session(2)
     b=2

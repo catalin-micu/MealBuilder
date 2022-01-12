@@ -166,3 +166,17 @@ class Users(BaseTable):
                     f"with data {update_data}")
 
         return receipt
+
+    def check_login_credentials(self, email: str, passwd: str) -> bool:
+        select_stmt = select(Users).where(Users.__table__.c[UsersColumns.EMAIL] == email).where(
+                                          Users.__table__.c[UsersColumns.PASSWD] == passwd)
+        selected_row = self.session.execute(select_stmt)
+        rows = [r for r in selected_row]
+        return bool(len(rows))
+
+    def get_user_id_from_email(self, email: str) -> int:
+        select_stmt = select(Users).where(Users.email == email)
+        res = self.session.execute(select_stmt)
+        user = [r for r in res.fetchall()][0]
+
+        return user._data[0].user_id
