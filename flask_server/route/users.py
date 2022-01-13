@@ -28,7 +28,8 @@ def login():
 
     if users.check_login_credentials(email, passwd):
         sessions.create_session_from_email(email)
-        return Response(f"Login successful and session up to date for email '{email}'", status=200)
+        user_data = users.get_user_data_from_email(email)
+        return jsonify(user_data)
     else:
         return Response(f"Invalid credentials! Access denied", status=403)
 

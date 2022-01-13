@@ -16,7 +16,7 @@ if __name__ == '__main__':
     """update user"""
     # a = users.update_user('5', 'user_id', {'last_login': datetime.now()})
     """check user credentials"""
-    a = users.get_user_id_from_email('insert@gmail.com')
+    a = users.get_user_data_from_email('bornac@hotmail.com')
 
     """created table object from dict"""
     # r2 = Restaurants(**restaurant_data[1])

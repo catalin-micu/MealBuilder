@@ -3,6 +3,7 @@ from pathlib import Path
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy import Integer, Column, String, SmallInteger, Boolean, func, DateTime, delete, select, update
 from flask_server.model import BaseTable, logger
+from flask_server.utils import transform_addresses_to_iterable
 
 
 class UsersColumns:
@@ -180,3 +181,24 @@ class Users(BaseTable):
         user = [r for r in res.fetchall()][0]
 
         return user._data[0].user_id
+
+    def get_user_data_from_email(self, email: str) -> dict:
+        select_stmt = select(Users).where(Users.email == email)
+        res = self.session.execute(select_stmt)
+        user = [r for r in res.fetchall()][0]._data[0]
+        user_dict = {
+            'admin_profile': user.admin_profile,
+            'card_expiry': user.card_expiry,
+            'card_holder_name': user.card_holder_name,
+            'card_nb': user.card_nb,
+            'created_on': str(user.created_on),
+            'cvv': user.cvv,
+            'email': email,
+            'full_name': user.full_name,
+            'passwd': user.passwd,
+            'phone_number': user.phone_number,
+            'preferred_addresses': transform_addresses_to_iterable(user.preferred_addresses),
+            'user_id': user.user_id
+        }
+
+        return user_dict
