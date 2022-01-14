@@ -16,13 +16,13 @@ if __name__ == '__main__':
     """update user"""
     # a = users.update_user('5', 'user_id', {'last_login': datetime.now()})
     """check user credentials"""
-    a = users.get_user_data_from_email('bornac@hotmail.com')
+    # a = users.get_user_data_from_email('bornac@hotmail.com')
 
     """created table object from dict"""
     # r2 = Restaurants(**restaurant_data[1])
     # b=2
 
-    # restaurants = Restaurants()
+    restaurants = Restaurants()
 
     """upserting from code"""
     # restaurants.upsert_row(rows=restaurant_data)
@@ -36,4 +36,6 @@ if __name__ == '__main__':
     # sess = Sessions()
     """delete session"""
     # a = sess.delete_session(2)
+    """rests in city"""
+    a = restaurants.get_restaurants_in_given_city('city')
     b=2

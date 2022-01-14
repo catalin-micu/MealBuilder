@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from sqlalchemy import Column, Integer, String, Boolean, delete
+from sqlalchemy import Column, Integer, String, Boolean, delete, select
 from sqlalchemy.dialects.postgresql import insert
 from flask_server.model import BaseTable, logger
 
@@ -113,3 +113,28 @@ class Restaurants(BaseTable):
             receipt.append(dict(row._mapping))
 
         return receipt
+
+    def get_restaurants_in_given_city(self, city: str) -> []:
+        """
+        gets all the restaurants in a given city
+        :param city: city to query after
+        :return: list of dicts with data (keys mapped according to table column names)
+        """
+        rests_list = []
+        select_stmt = select(Restaurants).where(Restaurants.city == city)
+        rests = self.session.execute(select_stmt).fetchall()
+        for r in rests:
+            rests_list.append(
+                {
+                    'city': r._data[0].city,
+                    'email': r._data[0].email,
+                    'franchise_id': r._data[0].franchise_id,
+                    'passwd': r._data[0].passwd,
+                    'provides_custom_meals': r._data[0].provides_custom_meals,
+                    'provides_scheduled_delivery': r._data[0].provides_scheduled_delivery,
+                    'restaurant_id': r._data[0].restaurant_id,
+                    'restaurant_name': r._data[0].restaurant_name,
+                }
+            )
+
+        return rests_list
