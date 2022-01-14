@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Row
 from sqlalchemy.orm import sessionmaker, declarative_base
 from flask_server.cutom_logger import create_logger
 
@@ -50,3 +51,11 @@ class BaseTable(Base):
         deleted_rows = set()
 
         return deleted_rows
+
+    @staticmethod
+    def _transform_row_into_dict(r: Row, columns: []) -> dict:
+        result = dict()
+        for c in columns:
+            result[c] = getattr(r._data[0], c)
+
+        return result

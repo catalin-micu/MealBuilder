@@ -22,6 +22,11 @@ class UsersColumns:
     PHONE_NUMBER = 'phone_number'
 
 
+USER_COLUMNS_LIST = [UsersColumns.USER_ID, UsersColumns.EMAIL, UsersColumns.PASSWD, UsersColumns.FULL_NAME,
+                     UsersColumns.CARD_NB, UsersColumns.CARD_HOLDER_NAME, UsersColumns.CARD_EXPIRY, UsersColumns.CVV,
+                     UsersColumns.PREFERRED_ADDRESSES, UsersColumns.ADMIN_PROFILE, UsersColumns.CREATED_ON,
+                     UsersColumns.LAST_LOGIN, UsersColumns.PHONE_NUMBER]
+
 ACCEPTED_IDENTIFIER_TYPES = {UsersColumns.USER_ID, UsersColumns.EMAIL, UsersColumns.PHONE_NUMBER}
 
 
@@ -184,21 +189,9 @@ class Users(BaseTable):
 
     def get_user_data_from_email(self, email: str) -> dict:
         select_stmt = select(Users).where(Users.email == email)
-        res = self.session.execute(select_stmt)
-        user = [r for r in res.fetchall()][0]._data[0]
-        user_dict = {
-            'admin_profile': user.admin_profile,
-            'card_expiry': user.card_expiry,
-            'card_holder_name': user.card_holder_name,
-            'card_nb': user.card_nb,
-            'created_on': str(user.created_on),
-            'cvv': user.cvv,
-            'email': email,
-            'full_name': user.full_name,
-            'passwd': user.passwd,
-            'phone_number': user.phone_number,
-            'preferred_addresses': transform_addresses_to_iterable(user.preferred_addresses),
-            'user_id': user.user_id
-        }
+        res = self.session.execute(select_stmt).fetchall()
+        user_dict = super(Users, Users)._transform_row_into_dict(res[0], USER_COLUMNS_LIST)
+        user_dict[UsersColumns.PREFERRED_ADDRESSES] = transform_addresses_to_iterable(
+            user_dict[UsersColumns.PREFERRED_ADDRESSES])
 
         return user_dict

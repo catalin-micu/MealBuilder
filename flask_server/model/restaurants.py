@@ -2,6 +2,8 @@ import json
 from pathlib import Path
 from sqlalchemy import Column, Integer, String, Boolean, delete, select
 from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.engine import Row
+
 from flask_server.model import BaseTable, logger
 
 
@@ -14,6 +16,12 @@ class RestaurantsColumns:
     CITY = 'city'
     PROVIDES_CUSTOM_MEALS = 'provides_custom_meals'
     PROVIDES_CUSTOM_DELIVERY = 'provides_scheduled_delivery'
+
+
+RESTAURANTS_COLUMNS_LIST = [RestaurantsColumns.RESTAURANT_ID, RestaurantsColumns.RESTAURANT_NAME,
+                            RestaurantsColumns.FRANCHISE_ID, RestaurantsColumns.EMAIL, RestaurantsColumns.PASSWD,
+                            RestaurantsColumns.CITY, RestaurantsColumns.PROVIDES_CUSTOM_MEALS,
+                            RestaurantsColumns.PROVIDES_CUSTOM_DELIVERY]
 
 
 class Restaurants(BaseTable):
@@ -124,17 +132,20 @@ class Restaurants(BaseTable):
         select_stmt = select(Restaurants).where(Restaurants.city == city)
         rests = self.session.execute(select_stmt).fetchall()
         for r in rests:
-            rests_list.append(
-                {
-                    'city': r._data[0].city,
-                    'email': r._data[0].email,
-                    'franchise_id': r._data[0].franchise_id,
-                    'passwd': r._data[0].passwd,
-                    'provides_custom_meals': r._data[0].provides_custom_meals,
-                    'provides_scheduled_delivery': r._data[0].provides_scheduled_delivery,
-                    'restaurant_id': r._data[0].restaurant_id,
-                    'restaurant_name': r._data[0].restaurant_name,
-                }
-            )
+            rests_list.append(super(Restaurants, Restaurants)._transform_row_into_dict(r, RESTAURANTS_COLUMNS_LIST))
+
+        return rests_list
+
+    def search_restaurants_by_name(self, input_name: str) -> []:
+        """
+        gets restaurant details based on name
+        :param input_name: full name of the restaurant
+        :return: list of dicts with data (keys mapped according to table column names)
+        """
+        rests_list = []
+        select_stmt = select(Restaurants).where(Restaurants.restaurant_name.like(f'{input_name}'))
+        res = self.session.execute(select_stmt).fetchall()
+        for r in res:
+            rests_list.append(super(Restaurants, Restaurants)._transform_row_into_dict(r, RESTAURANTS_COLUMNS_LIST))
 
         return rests_list
