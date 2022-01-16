@@ -1,6 +1,6 @@
 def transform_addresses_to_iterable(addresses: str) -> list:
     addr_list = []
-    if not len(addresses):
+    if not addresses:
         return addr_list
 
     var = addresses.split('//')
