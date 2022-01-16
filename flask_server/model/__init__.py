@@ -59,3 +59,11 @@ class BaseTable(Base):
             result[c] = getattr(r._data[0], c)
 
         return result
+
+    @staticmethod
+    def _transform_table_obj_into_dict(t, columns) -> dict:
+        result = dict()
+        for c in columns:
+            result[c] = getattr(t, c)
+
+        return result

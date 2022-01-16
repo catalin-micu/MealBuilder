@@ -2,8 +2,6 @@ import json
 from pathlib import Path
 from sqlalchemy import Column, Integer, String, Boolean, delete, select
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.engine import Row
-
 from flask_server.model import BaseTable, logger
 
 
@@ -36,7 +34,7 @@ class Restaurants(BaseTable):
     provides_custom_meals = Column(Boolean, default=False)
     provides_scheduled_delivery = Column(Boolean, default=False)
 
-    def upsert_row(self, rows: list):
+    def upsert_row(self, rows: list) -> []:
         """
         inserts or updates rows: if franchise_id already exists, it will update the columns on that row
          (except restaurant_id, franchise_id, city) with the newly provided data

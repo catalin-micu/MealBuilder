@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Cheeseburger Menu",
+    "restaurant_id": 35,
+    "food_type": "meal",
+    "calories": 1305,
+    "protein": 70.5,
+    "carbs": 117.4,
+    "fat": 62.6,
+    "cooking_details": "HOWEVER THE FUCK!! THE CHEF WANTS"
+  },
+  {
+    "name": "BIG SHAORMA",
+    "restaurant_id": 35,
+    "food_type": "meal",
+    "calories": 1500,
+    "protein": 68.5,
+    "carbs": 101.4,
+    "fat": 71.2,
+    "cooking_details": "like that father"
+  },
+  {
+    "name": "Crispy Menu",
+    "restaurant_id": 35,
+    "food_type": "meal",
+    "calories": 1120,
+    "protein": 52,
+    "carbs": 133,
+    "fat": 90.2,
+    "cooking_details": "Chicken crispy (250g), fries/wedges (150g), salad (75g), sauce of choice (25g)"
+  },
+  {
+    "name": "Grilled Chicken Breast",
+    "restaurant_id": 35,
+    "food_type": "protein",
+    "calories": 132,
+    "protein": 21.6,
+    "carbs": 3.6,
+    "fat": 2.4,
+    "cooking_details": "Info per 100g; Grilled"
+  },
+  {
+    "name": "Wedges",
+    "restaurant_id": 35,
+    "food_type": "carbs",
+    "calories": 123,
+    "protein": 2.7,
+    "carbs": 26,
+    "fat": 2.2,
+    "cooking_details": "Info per 100g; Baked potatoes"
+  },
+  {
+    "name": "Pizza Taraneasca",
+    "restaurant_id": 168,
+    "food_type": "meal",
+    "calories": 750,
+    "protein": 37,
+    "carbs": 56,
+    "fat": 40,
+    "cooking_details": "550g - Sos rosii, mozzarella, salam chorizo, ciuperci, bacon, ceapa, telemea"
+  },
+  {
+    "name": "Pizza Diavollo",
+    "restaurant_id": 168,
+    "food_type": "meal",
+    "calories": 653,
+    "protein": 49,
+    "carbs": 41,
+    "fat": 39,
+    "cooking_details": "500g - Sos rosii, mozzarella, salam chorizo, peperoncino"
+  },
+  {
+    "name": "Paste Carbonara",
+    "restaurant_id": 168,
+    "food_type": "meal",
+    "calories": 653,
+    "protein": 49,
+    "carbs": 41,
+    "fat": 39,
+    "cooking_details": "500gr - paste, gran cucina, ou, bacon, parmezan"
+  }
+]

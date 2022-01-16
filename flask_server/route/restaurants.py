@@ -1,8 +1,11 @@
-from flask import Blueprint, request, Response
+from flask import Blueprint, request, Response, jsonify
+
+from flask_server.model.products import Products
 from flask_server.model.restaurants import Restaurants
 
 restaurants_blueprint = Blueprint('restaurants_blueprint', __name__, url_prefix='/restaurants')
 restaurants = Restaurants()
+products = Products()
 
 
 @restaurants_blueprint.route('/upsert-from-code', methods=['POST'])
@@ -52,3 +55,32 @@ def delete():
     if len(receipt) == 0:
         return Response("Rows don't exist", status=400)
     return Response(f'Successfully deleted:\n{receipt}', status=200)
+
+
+@restaurants_blueprint.route('/get-menu', methods=['POST'])
+def get_restaurant_meals():
+    return jsonify(products.get_restaurant_products(request.json.get('restaurant_name'), 'meal'))
+
+
+@restaurants_blueprint.route('/get-products', methods=['POST'])
+def get_restaurant_products_for_custom_feals():
+    result_products = []
+    restaurant_name = request.json.get('restaurant_name')
+
+    protein_products = products.get_restaurant_products(restaurant_name, 'protein')
+    if len(protein_products):
+        result_products.append(*protein_products)
+
+    carbs_products = products.get_restaurant_products(restaurant_name, 'carbs')
+    if len(carbs_products):
+        result_products.append(*carbs_products)
+
+    fat_products = products.get_restaurant_products(restaurant_name, 'fat')
+    if len(fat_products):
+        result_products.append(*fat_products)
+
+    if not len(result_products):
+        return Response(f"No products for restaurant '{restaurant_name}'")
+
+    return jsonify(result_products)
+
