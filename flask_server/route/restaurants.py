@@ -80,7 +80,7 @@ def get_restaurant_products_for_custom_feals():
         result_products.append(*fat_products)
 
     if not len(result_products):
-        return Response(f"No products for restaurant '{restaurant_name}'")
+        return Response(f"No products for restaurant '{restaurant_name}'", status=404)
 
     return jsonify(result_products)
 

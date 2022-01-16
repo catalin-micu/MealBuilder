@@ -7,6 +7,16 @@ users = Users()
 restaurants = Restaurants()
 
 
+@dashboard_blueprint.route('/cities-for-logged-user', methods=['POST'])
+def get_addresses():
+    email = request.json.get('email')
+    if not email:
+        return Response("no email in request body", status=404)
+    addresses = users.get_user_data_from_email(email).get('preferred_addresses')
+
+    return jsonify([item.get('city') for item in addresses])
+
+
 @dashboard_blueprint.route('/nearby-restaurants', methods=['POST'])
 def get_nearby_restaurants():
     """
@@ -17,6 +27,9 @@ def get_nearby_restaurants():
     }
     """
     target_city = request.json.get('city')
+    if not target_city:
+        return Response("no email in request body", status=404)
+
     restaurants_list = restaurants.get_restaurants_in_given_city(target_city)
     if len(restaurants_list) == 0:
         return Response(f"No restaurants for city '{target_city}'", status=404)
