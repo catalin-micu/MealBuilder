@@ -12,6 +12,14 @@ def _test_view():
     return "<h1> SA MOARA BAIETII!!! </h1>"
 
 
+@users_blueprint.route('/get-name', methods=['POST'])
+def func():
+    email = request.json.get('email')
+    if not email:
+        return Response("no email in body", status=404)
+    return jsonify({'name': users.get_user_data_from_email(email).get('full_name')})
+
+
 @users_blueprint.route('/login', methods=['POST'])
 def login():
     """
