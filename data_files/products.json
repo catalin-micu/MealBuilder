@@ -7,7 +7,8 @@
     "protein": 70.5,
     "carbs": 117.4,
     "fat": 62.6,
-    "cooking_details": "HOWEVER THE FUCK!! THE CHEF WANTS"
+    "cooking_details": "HOWEVER THE FUCK!! THE CHEF WANTS",
+    "price": 35
   },
   {
     "name": "BIG SHAORMA",
@@ -17,7 +18,8 @@
     "protein": 68.5,
     "carbs": 101.4,
     "fat": 71.2,
-    "cooking_details": "like that father"
+    "cooking_details": "like that father",
+    "price": 30
   },
   {
     "name": "Crispy Menu",
@@ -27,7 +29,8 @@
     "protein": 52,
     "carbs": 133,
     "fat": 90.2,
-    "cooking_details": "Chicken crispy (250g), fries/wedges (150g), salad (75g), sauce of choice (25g)"
+    "cooking_details": "Chicken crispy (250g), fries/wedges (150g), salad (75g), sauce of choice (25g)",
+    "price": 29
   },
   {
     "name": "Grilled Chicken Breast",
@@ -37,7 +40,8 @@
     "protein": 21.6,
     "carbs": 3.6,
     "fat": 2.4,
-    "cooking_details": "Info per 100g; Grilled"
+    "cooking_details": "Info per 100g; Grilled",
+    "price": 20
   },
   {
     "name": "Wedges",
@@ -47,7 +51,8 @@
     "protein": 2.7,
     "carbs": 26,
     "fat": 2.2,
-    "cooking_details": "Info per 100g; Baked potatoes"
+    "cooking_details": "Info per 100g; Baked potatoes",
+    "price": 15
   },
   {
     "name": "Pizza Taraneasca",
@@ -57,7 +62,8 @@
     "protein": 37,
     "carbs": 56,
     "fat": 40,
-    "cooking_details": "550g - Sos rosii, mozzarella, salam chorizo, ciuperci, bacon, ceapa, telemea"
+    "cooking_details": "550g - Sos rosii, mozzarella, salam chorizo, ciuperci, bacon, ceapa, telemea",
+    "price": 37
   },
   {
     "name": "Pizza Diavollo",
@@ -67,7 +73,8 @@
     "protein": 49,
     "carbs": 41,
     "fat": 39,
-    "cooking_details": "500g - Sos rosii, mozzarella, salam chorizo, peperoncino"
+    "cooking_details": "500g - Sos rosii, mozzarella, salam chorizo, peperoncino",
+    "price": 35
   },
   {
     "name": "Paste Carbonara",
@@ -77,6 +84,7 @@
     "protein": 49,
     "carbs": 41,
     "fat": 39,
-    "cooking_details": "500gr - paste, gran cucina, ou, bacon, parmezan"
+    "cooking_details": "500gr - paste, gran cucina, ou, bacon, parmezan",
+    "price": 31
   }
 ]
