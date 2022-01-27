@@ -195,3 +195,10 @@ class Users(BaseTable):
             user_dict[UsersColumns.PREFERRED_ADDRESSES])
 
         return user_dict
+
+    def get_user_data_from_email_standard_addresses(self, email: str) -> dict:
+        select_stmt = select(Users).where(Users.email == email)
+        res = self.session.execute(select_stmt).fetchall()
+        user_dict = super(Users, Users)._transform_row_into_dict(res[0], USER_COLUMNS_LIST)
+
+        return user_dict

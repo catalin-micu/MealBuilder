@@ -1,6 +1,7 @@
 from flask import Blueprint, request, Response, jsonify
 from flask_server.model.restaurants import Restaurants
 from flask_server.model.users import Users
+from flask_server.token import token_required
 
 dashboard_blueprint = Blueprint('dashboard_blueprint', __name__, url_prefix='/dashboard')
 users = Users()
@@ -8,7 +9,8 @@ restaurants = Restaurants()
 
 
 @dashboard_blueprint.route('/cities-for-logged-user', methods=['POST'])
-def get_addresses():
+@token_required
+def get_addresses(current_user):
     email = request.json.get('email')
     if not email:
         return Response("no email in request body", status=404)
@@ -18,7 +20,8 @@ def get_addresses():
 
 
 @dashboard_blueprint.route('/nearby-restaurants', methods=['POST'])
-def get_nearby_restaurants():
+@token_required
+def get_nearby_restaurants(current_user):
     """
     gets all the restaurants in a particular city
     :return: list of dicts with data about the restaurants in that city (keys mapped to table column names)
@@ -37,7 +40,8 @@ def get_nearby_restaurants():
 
 
 @dashboard_blueprint.route('/search-restaurants', methods=['POST'])
-def search_restaurants():
+@token_required
+def search_restaurants(current_user):
     """
     gets restaurant based on name
     :return: list of dicts with data about the restaurants in that city (keys mapped to table column names)
@@ -49,4 +53,4 @@ def search_restaurants():
     restaurants_list = restaurants.search_restaurants_by_name(restaurant_name_input)
     if len(restaurants_list) == 0:
         return Response(f"No restaurants like '{restaurant_name_input}'", status=404)
-    return jsonify(restaurants_list)
+    return jsonify(restaurants_list[0])

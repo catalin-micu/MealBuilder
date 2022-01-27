@@ -20,12 +20,14 @@ class ProductsColumns:
     COOKING_METHOD = 'cooking_method'
     COOKING_DETAILS = 'cooking_details'
     IDENTIFIER = 'identifier'
+    PRICE = 'price'
+    CURRENCY = 'currency'
 
 
 PRODUCTS_COLUMNS_LIST = [ProductsColumns.PRODUCT_ID, ProductsColumns.NAME, ProductsColumns.RESTAURANT_ID,
                          ProductsColumns.FOOD_TYPE, ProductsColumns.CALORIES, ProductsColumns.PROTEIN,
                          ProductsColumns.CARBS, ProductsColumns.FAT, ProductsColumns.COOKING_METHOD,
-                         ProductsColumns.COOKING_DETAILS, ProductsColumns.IDENTIFIER]
+                         ProductsColumns.COOKING_DETAILS, ProductsColumns.IDENTIFIER, ProductsColumns.PRICE, ProductsColumns.CURRENCY]
 
 
 class Products(BaseTable):
@@ -42,6 +44,8 @@ class Products(BaseTable):
     cooking_method = Column(String)
     cooking_details = Column(String, nullable=False)
     identifier = Column(String, unique=True)    # f'{name}/{restaurant_id}'
+    price = Column(Integer, nullable=False)
+    currency = Column(String, default="RON")
 
     restaurants = relationship('Restaurants', backref=backref("products", uselist=False))
 
