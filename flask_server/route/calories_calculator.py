@@ -23,9 +23,9 @@ def calculate_daily_calories():
     if not validate_request_data_for_daily_calories(data):
         return Response(f"Invalid params for daily calories calculator; Provided data is:\n{json.dumps(data,indent=4)}",
                         status=400)
-    result = utils.calculate_caloric_needs_per_day(bmr=int(utils.calculate_bmr(weight_in_kg=data.get('weight'),
-                                                                               height_in_cm=data.get('height'),
-                                                                               age_in_years=data.get('age'),
+    result = utils.calculate_caloric_needs_per_day(bmr=int(utils.calculate_bmr(weight_in_kg=float(data.get('weight')),
+                                                                               height_in_cm=float(data.get('height')),
+                                                                               age_in_years=int(data.get('age')),
                                                                                gender=data.get('gender'))),
                                                    activity_level=data.get('activity'))
     return jsonify({'daily_calories': result})
