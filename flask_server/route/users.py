@@ -1,10 +1,13 @@
-from datetime import datetime, timedelta
 from flask import jsonify, Blueprint, request, Response, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
-import jwt
 from flask_server.model.sessions import Sessions
 from flask_server.model.users import Users
-from initialize_flask_server import app
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token, jwt_required,
+    decode_token, set_access_cookies,
+    set_refresh_cookies, unset_jwt_cookies
+)
 
 users_blueprint = Blueprint('users_blueprint', __name__, url_prefix='/users')
 users = Users()
@@ -17,6 +20,7 @@ def _test_view():
 
 
 @users_blueprint.route('/get-name', methods=['POST'])
+@jwt_required
 def func():
     email = request.json.get('email')
     if not email:
@@ -25,6 +29,7 @@ def func():
 
 
 @users_blueprint.route('/get-user', methods=['POST'])
+@jwt_required
 def get_user():
     email = request.json.get('email')
     if not email:
@@ -67,13 +72,16 @@ def login():
         )
 
     if check_password_hash(user.get('passwd'), data.get('passwd')):
-        # generates the JWT Token
-        token = jwt.encode({
-            'email': user.get('email'),
-            'exp': datetime.utcnow() + timedelta(minutes=30)
-        }, app.config['SECRET_KEY'])
+        # Create the tokens we will be sending back to the user
+        access_token = create_access_token(identity=email)
+        refresh_token = create_refresh_token(identity=email)
 
-        return make_response(jsonify({'token': token.decode('UTF-8')}), 201)
+        # Set the JWT cookies in the response
+        resp = jsonify({'login': True, 'token': access_token})
+        # set_access_cookies(resp, access_token)
+        # set_refresh_cookies(resp, refresh_token)
+
+        return make_response(resp, 200)
         # returns 403 if password is wrong
     return make_response(
         'Could not verify',
@@ -91,8 +99,11 @@ def logout():
     email = request.json.get('email')
     user_id = users.get_user_id_from_email(email)
     sessions.delete_session(user_id)
+    resp = jsonify({'logout': True})
+    # unset_jwt_cookies(resp)
+    return resp, 200
 
-    return Response(f"User with email '{email}' was logged out and corresponding session was deleted", status=200)
+    # return Response(f"User with email '{email}' was logged out and corresponding session was deleted", status=200)
 
 
 @users_blueprint.route('/sign-up', methods=['POST'])
@@ -114,13 +125,13 @@ def sign_up():
 
 
 @users_blueprint.route('/decode-token', methods=['POST'])
-def decode_token():
+def decode():
     token = request.json.get('token')
 
     try:
         # decoding the payload to fetch the stored details
-        data = jwt.decode(token, app.config['SECRET_KEY'])
-        current_user = users.get_user_data_from_email(data.get('email'))
+        data = decode_token(token)
+        current_user = users.get_user_data_from_email(data.get('identity'))
     except:
         return jsonify({
             'message': 'Token is invalid !!'
