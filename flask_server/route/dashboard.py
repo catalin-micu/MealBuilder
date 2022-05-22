@@ -29,7 +29,7 @@ def get_nearby_restaurants():
         "city": "bucuresti"
     }
     """
-    target_city = request.json.get('city')
+    target_city = request.json.get('city').lower()
     if not target_city:
         return Response("no email in request body", status=404)
 
