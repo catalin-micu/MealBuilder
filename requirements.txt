@@ -42,3 +42,4 @@ Werkzeug==2.0.2
 zope.event==4.5.0
 zope.interface==5.4.0
 pyjwt==1.7.1
+flask_jwt_extended

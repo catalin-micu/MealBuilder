@@ -1,7 +1,7 @@
 from flask import Blueprint, request, Response, jsonify
 from flask_server.model.restaurants import Restaurants
 from flask_server.model.users import Users
-from flask_server.token import token_required
+from flask_jwt_extended import jwt_required
 
 dashboard_blueprint = Blueprint('dashboard_blueprint', __name__, url_prefix='/dashboard')
 users = Users()
@@ -9,8 +9,8 @@ restaurants = Restaurants()
 
 
 @dashboard_blueprint.route('/cities-for-logged-user', methods=['POST'])
-@token_required
-def get_addresses(current_user):
+@jwt_required
+def get_addresses():
     email = request.json.get('email')
     if not email:
         return Response("no email in request body", status=404)
@@ -20,8 +20,8 @@ def get_addresses(current_user):
 
 
 @dashboard_blueprint.route('/nearby-restaurants', methods=['POST'])
-@token_required
-def get_nearby_restaurants(current_user):
+@jwt_required
+def get_nearby_restaurants():
     """
     gets all the restaurants in a particular city
     :return: list of dicts with data about the restaurants in that city (keys mapped to table column names)
@@ -40,8 +40,8 @@ def get_nearby_restaurants(current_user):
 
 
 @dashboard_blueprint.route('/search-restaurants', methods=['POST'])
-@token_required
-def search_restaurants(current_user):
+@jwt_required
+def search_restaurants():
     """
     gets restaurant based on name
     :return: list of dicts with data about the restaurants in that city (keys mapped to table column names)
