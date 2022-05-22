@@ -27,7 +27,8 @@ class ProductsColumns:
 PRODUCTS_COLUMNS_LIST = [ProductsColumns.PRODUCT_ID, ProductsColumns.NAME, ProductsColumns.RESTAURANT_ID,
                          ProductsColumns.FOOD_TYPE, ProductsColumns.CALORIES, ProductsColumns.PROTEIN,
                          ProductsColumns.CARBS, ProductsColumns.FAT, ProductsColumns.COOKING_METHOD,
-                         ProductsColumns.COOKING_DETAILS, ProductsColumns.IDENTIFIER, ProductsColumns.PRICE, ProductsColumns.CURRENCY]
+                         ProductsColumns.COOKING_DETAILS, ProductsColumns.IDENTIFIER, ProductsColumns.PRICE,
+                         ProductsColumns.CURRENCY]
 
 
 class Products(BaseTable):

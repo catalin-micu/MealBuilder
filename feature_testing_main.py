@@ -1,6 +1,8 @@
 from datetime import datetime
 from data_files.data import insert_user_data
+from flask_server import utils
 from flask_server.model.products import Products
+from flask_server.model.progress import Progress
 from flask_server.model.restaurants import Restaurants
 from flask_server.model.sessions import Sessions
 from flask_server.model.users import Users
@@ -40,5 +42,13 @@ if __name__ == '__main__':
 
     products = Products()
     # a = products.upsert_products_from_file('./data_files/products.json')
-    a = products.get_restaurant_products('Uncle John', 'meal')
+    # a = products.get_restaurant_products('Uncle John', 'meal')
+
+    a = utils.calculate_caloric_needs_per_day(bmr=int(utils.calculate_bmr(weight_in_kg=80.3,
+                                                                          height_in_cm=179,
+                                                                          age_in_years=23,
+                                                                          gender='male')),
+                                              activity_level='moderate')
+    progress = Progress()
+    a = progress.get_progress(email='catalinmicu98@gmail.com')
     b=2
