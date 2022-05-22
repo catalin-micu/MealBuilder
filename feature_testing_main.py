@@ -2,10 +2,10 @@ from datetime import datetime
 from data_files.data import insert_user_data
 from flask_server import utils
 from flask_server.model.products import Products
+from flask_server.model.progress import Progress
 from flask_server.model.restaurants import Restaurants
 from flask_server.model.sessions import Sessions
 from flask_server.model.users import Users
-
 
 
 if __name__ == '__main__':
@@ -49,4 +49,6 @@ if __name__ == '__main__':
                                                                           age_in_years=23,
                                                                           gender='male')),
                                               activity_level='moderate')
+    progress = Progress()
+    a = progress.get_progress(email='catalinmicu98@gmail.com')
     b=2

@@ -1,10 +1,12 @@
 import json
 from flask import Blueprint, request, Response, jsonify
 from flask_server import utils
+from flask_server.model.progress import Progress
 
 calories_calculator_blueprint = Blueprint('calories_calculator_blueprint', __name__, url_prefix='/calories-calculator')
 REQUIRED_PARAMS_FOR_DAILY_CALORIES = {'weight', 'height', 'age', 'gender', 'activity', 'goal'}
 VALID_GOAL_VALUES = {'maintenance', 'lose', 'gain'}
+progress = Progress()
 
 
 def validate_request_data_for_daily_calories(data: dict) -> bool:
@@ -35,7 +37,8 @@ def calculate_daily_calories():
         "age": 23,
         "gender": "male",
         "activity": "moderate",
-        "goal": "gain"
+        "goal": "gain",
+        "email": "email@email.com"
     }
     Possible values:
         gender: [male, female]
@@ -52,5 +55,17 @@ def calculate_daily_calories():
         age_in_years=int(data.get('age')),
         gender=data.get('gender'))),
             activity_level=data.get('activity'))
-    return jsonify({'daily_calories': modify_daily_calories_based_on_goal(maintenance_calories=int(maintenance_calories),
-                                                                          goal=data.get('goal'))})
+    suggested_calories = modify_daily_calories_based_on_goal(maintenance_calories=int(maintenance_calories),
+                                                             goal=data.get('goal'))
+    progress.insert(progress_data={
+        'email': data.get('email'),
+        'weight': data.get('weight'),
+        'calories': suggested_calories
+    })
+    return jsonify({'daily_calories': suggested_calories})
+
+
+@calories_calculator_blueprint.route('/get-progress', methods=['POST'])
+def get_progress():
+    data = request.json
+    return jsonify(progress.get_progress(email=data.get('email')))
