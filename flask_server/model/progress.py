@@ -2,8 +2,9 @@ from sqlalchemy.orm import relationship, backref
 from flask_server.model import BaseTable, logger
 import json
 from pathlib import Path
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, func, select
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, select
 from sqlalchemy.dialects.postgresql import insert
+from datetime import datetime
 
 
 class ProgressColumns:
@@ -21,11 +22,11 @@ PROGRESS_COLUMNS_LIST = [ProgressColumns.RECORD_ID, ProgressColumns.EMAIL, Progr
 class Progress(BaseTable):
     __tablename__ = 'progress'
 
-    record_id = Column(Integer, primary_key=True)
+    record_id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String, ForeignKey('users.email'), nullable=False, )
     weight = Column(Integer, nullable=False)
     calories = Column(Integer, nullable=False)
-    timestamp = Column(DateTime, default=func.now())
+    timestamp = Column(Date, default=datetime.today())
 
     restaurants = relationship('Users', backref=backref("progress", uselist=False))
 

@@ -1,4 +1,6 @@
 import json
+from datetime import datetime
+
 from flask import Blueprint, request, Response, jsonify
 from flask_server import utils
 from flask_server.model.progress import Progress
@@ -68,4 +70,7 @@ def calculate_daily_calories():
 @calories_calculator_blueprint.route('/get-progress', methods=['POST'])
 def get_progress():
     data = request.json
-    return jsonify(progress.get_progress(email=data.get('email')))
+    progress_list = progress.get_progress(email=data.get('email'))
+    for prgss in progress_list:
+        prgss.update((k, str(v)) for k, v in prgss.items() if k == "timestamp")
+    return jsonify(progress_list)
