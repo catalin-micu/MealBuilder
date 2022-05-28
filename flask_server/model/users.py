@@ -188,13 +188,18 @@ class Users(BaseTable):
         return user._data[0].user_id
 
     def get_user_data_from_email(self, email: str) -> dict:
-        select_stmt = select(Users).where(Users.email == email)
-        res = self.session.execute(select_stmt).fetchall()
-        user_dict = super(Users, Users)._transform_row_into_dict(res[0], USER_COLUMNS_LIST)
-        user_dict[UsersColumns.PREFERRED_ADDRESSES] = transform_addresses_to_iterable(
-            user_dict[UsersColumns.PREFERRED_ADDRESSES])
+        try:
+            select_stmt = select(Users).where(Users.email == email)
 
-        return user_dict
+            res = self.session.execute(select_stmt).fetchall()
+            user_dict = super(Users, Users)._transform_row_into_dict(res[0], USER_COLUMNS_LIST)
+            user_dict[UsersColumns.PREFERRED_ADDRESSES] = transform_addresses_to_iterable(
+                user_dict[UsersColumns.PREFERRED_ADDRESSES])
+        except Exception as e:
+            logger.error(f'Login failed: {e}')
+            return {}
+        else:
+            return user_dict
 
     def get_user_data_from_email_standard_addresses(self, email: str) -> dict:
         select_stmt = select(Users).where(Users.email == email)
