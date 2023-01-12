@@ -6,7 +6,7 @@ from flask_server.model.progress import Progress
 from flask_server.model.restaurants import Restaurants
 from flask_server.model.sessions import Sessions
 from flask_server.model.users import Users
-
+from flask_server.googlemaps_api import get_nearby_restaurants_from_gmaps
 
 if __name__ == '__main__':
     users = Users()
@@ -51,4 +51,5 @@ if __name__ == '__main__':
                                               activity_level='moderate')
     progress = Progress()
     a = progress.get_progress(email='catalinmicu98@gmail.com')
+    print(get_nearby_restaurants_from_gmaps('Tineretului 17, Chiajna, Ilfov'))
     b=2
